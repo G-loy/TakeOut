@@ -1,0 +1,42 @@
+package cn.edu.zucc.take_out.model;
+
+public class BeanOrderInfo {
+     private int orderId;
+     private int productId;
+     private int numberId;
+     private double money;
+     private double perDiscount;
+	public int getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+	public int getProductId() {
+		return productId;
+	}
+	public void setProductId(int productId) {
+		this.productId = productId;
+	}
+	public int getNumberId() {
+		return numberId;
+	}
+	public void setNumberId(int numberId) {
+		this.numberId = numberId;
+	}
+	public double getMoney() {
+		return money;
+	}
+	public void setMoney(double money) {
+		this.money = money;
+	}
+	public double getPerDiscount() {
+		return perDiscount;
+	}
+	public void setPerDiscount(double perDiscount) {
+		this.perDiscount = perDiscount;
+	}
+     
+     
+     
+}
