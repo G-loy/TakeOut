@@ -1,9 +1,11 @@
-package cn.edu.zucc.take_out.ui;
+package cn.edu.zucc.take_out.ui.admin;
 
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -14,10 +16,12 @@ import javax.swing.table.TableModel;
 
 import cn.edu.zucc.take_out.TakeOutUtil;
 import cn.edu.zucc.take_out.model.BeanAdminInfo;
+import cn.edu.zucc.take_out.model.BeanCouInfo;
 import cn.edu.zucc.take_out.model.BeanRiderInfo;
 import cn.edu.zucc.take_out.model.BeanShopInfo;
 import cn.edu.zucc.take_out.model.BeanUserInfo;
 import cn.edu.zucc.take_out.util.BaseException;
+import cn.edu.zucc.take_out.util.BusinessException;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -47,37 +51,39 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 	private final JMenuItem menuItemDeletShop = new JMenuItem("删除商家");
 
 	private JMenu menuRider = new JMenu("骑手管理");
-	private JMenuItem MmnuItemAddRider = new JMenuItem("添加骑手");
-	private JMenuItem menuItemDeletRider = new JMenuItem("删除骑手");
+	private final JMenuItem menuItemBill = new JMenuItem("进入骑手管理界面");
 
 	private JMenu menuAdmin = new JMenu("管理员管理");
 	private JMenuItem menuItemAddAdmin = new JMenuItem("添加管理员");
 	private JMenuItem menuItemDeletAdmin = new JMenuItem("删除管理员");
 	private JMenuItem menuItemChangePwd = new JMenuItem("修改本管理员密码");
 
-	private JMenu mnNewMenu_5 = new JMenu("优惠管理");
+	private JMenu newMenuCou = new JMenu("优惠管理");
+	private JMenuItem menuItemAddCoup = new JMenuItem("添加优惠");
+	private JMenuItem menuItemDeletCoup = new JMenuItem("删除优惠");
 
-
-
+	private  JMenu MenuProduct = new JMenu("商品管理");
+	private  JMenuItem menuItemProudct = new JMenuItem("进入商品管理界面");
 
 	private JMenuItem MenuItemRefAdmin = new JMenuItem("刷新");
 	private JMenuItem MenuItemRefRider = new JMenuItem("刷新");
 	private JMenuItem MenuItemRefUser = new JMenuItem("刷新");
 	private JMenuItem MenuItemRefShop = new JMenuItem("刷新");
+	private JMenuItem menuItemRefreshCoup = new JMenuItem("刷新");
+
 
 	//将所有管理员显示在dataTable上
 	private Object tblAdminTitle[] = BeanAdminInfo.adminTableTitle;
 	private Object tblUserTitle[] = BeanUserInfo.USER_TITLE;
 	private Object tbShopTitle[] = BeanShopInfo.SHOP_TITLE;
 	private Object tbRiderTitle[] = BeanRiderInfo.Rider_TITLE;
-
-
+	private Object tbCouTitle[] = BeanCouInfo.CouTableTitle;
 
 	private Object tblAdminDate[][];
 	private Object tblUserDate[][];
 	private Object tblShopDate[][];
 	private Object tblRiderDate[][];
-
+	private Object tblCouDate[][];
 
 
 	DefaultTableModel tablModel = new DefaultTableModel();
@@ -87,6 +93,13 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 	List<BeanUserInfo>  allUser = null;
 	List<BeanShopInfo>  allShop = null;
 	List<BeanRiderInfo> allRider = null;
+	List<BeanCouInfo> allCoup = null;
+	private final JMenuItem menuItemChangeCoup = new JMenuItem("修改优惠");
+
+	public static BeanCouInfo curCoup = null;
+
+
+
 
 	private void reloadAdminTable() {
 		try {
@@ -183,6 +196,30 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 	}
 
 
+	private void reloadCouTable() {
+		try {
+			allCoup = TakeOutUtil.couManager.loadAll();
+		}catch(BaseException e) {
+			JOptionPane.showMessageDialog(null,e.getMessage(),"警告",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblCouDate = new Object[allCoup.size()][BeanCouInfo.CouTableTitle.length];
+		for(int i=0;i<allCoup.size();i++) {
+			for(int j=0;j<BeanCouInfo.CouTableTitle.length;j++) {
+
+				tblCouDate[i][j]=allCoup.get(i).getCell(j);
+				System.out.println(tblCouDate.toString());
+			}
+		}
+
+		tablModel.setDataVector(tblCouDate, tbCouTitle);
+		dataTable.setModel(tablModel);
+		dataTable.setBounds(0, 49, 884, 421);
+		this.dataTable.validate();
+		this.dataTable.repaint();
+	}
+
+
 
 
 	/**
@@ -200,6 +237,9 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 			}
 		});
 	}
+
+
+
 
 	/**
 	 * Create the frame.
@@ -232,26 +272,71 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 		MenuItemRefShop.addActionListener(this);
 
 		menuBar.add(menuRider);
-		menuRider.add(MmnuItemAddRider);
-		MmnuItemAddRider.addActionListener(this);
-		menuRider.add(menuItemDeletRider);
-		menuItemDeletRider.addActionListener(this);
 
 
-		menuRider.add(MenuItemRefRider);
-		menuItemDeletRider.addActionListener(this);
+		menuRider.add(MenuItemRefRider);		
+		menuRider.add(menuItemBill);
+		menuItemBill.addActionListener(this);
 
 		menuBar.add(menuAdmin);
 		menuAdmin.add(menuItemAddAdmin);
 		menuItemAddAdmin.addActionListener(this);
-
 		menuAdmin.add(menuItemDeletAdmin);
 		menuItemDeletAdmin.addActionListener(this);
 		menuAdmin.add(menuItemChangePwd);
 		menuItemChangePwd.addActionListener(this);
 
-
+		menuBar.add(newMenuCou);
 		menuAdmin.add(MenuItemRefAdmin);
+		newMenuCou.add(menuItemAddCoup);
+		menuItemAddCoup.addActionListener(this);
+		newMenuCou.add(menuItemDeletCoup);
+		menuItemDeletCoup.addActionListener(this);
+
+		newMenuCou.add(menuItemChangeCoup);
+		menuItemChangeCoup.addActionListener(this);
+		newMenuCou.add(menuItemRefreshCoup);
+		menuItemRefreshCoup.addActionListener(this);
+
+		menuBar.add(MenuProduct);
+		MenuProduct.add(menuItemProudct);
+		menuItemProudct.addActionListener(this);
+		dataTable.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				int i  = dataTable.getSelectedRow();
+				curCoup = allCoup.get(i);
+			}
+		} );
+
+
+
 		MenuItemRefAdmin.addActionListener(new ActionListener() {
 
 			@Override
@@ -289,9 +374,19 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 			}
 		});
 
+		menuItemRefreshCoup.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				reloadCouTable();
+
+			}
+		});
 
 
-		menuBar.add(mnNewMenu_5);
+
+
 	}
 
 	@Override
@@ -331,25 +426,6 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 			}catch(BaseException e1) {
 				JOptionPane.showMessageDialog(null,e1.getMessage(),"警告",JOptionPane.ERROR_MESSAGE);
 			}
-		}else if(e.getSource()==this.MmnuItemAddRider) {
-			FrmAddRider fadd = new FrmAddRider();
-			fadd.setVisible(true);
-		}else if(e.getSource()==this.menuItemDeletRider){
-			int i = dataTable.getSelectedRow();
-			BeanRiderInfo sel = new BeanRiderInfo();
-			sel = allRider.get(i);
-			System.out.println(i);
-			if(sel==null) {
-				JOptionPane.showMessageDialog(null, "为选中有效序列","警告",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			try {
-				TakeOutUtil.riderManger.delete(sel);
-//				this.reloadRiderTable();
-			}catch(BaseException e1) {
-				JOptionPane.showMessageDialog(null,e1.getMessage(),"警告",JOptionPane.ERROR_MESSAGE);
-			}
-			
 		}else if(e.getSource()==this.menuItemAddAdmin) {
 			FrmAddAdmin fadd = new FrmAddAdmin();
 			fadd.setVisible(true);
@@ -370,9 +446,40 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 				return;
 			}
 		}else if (e.getSource()==this.menuItemChangePwd) {
-			 FrmChangeAdminPassword change = new FrmChangeAdminPassword();
-			 change.setVisible(true);
-			 this.setVisible(false);
+			FrmChangeAdminPassword change = new FrmChangeAdminPassword();
+			change.setVisible(true);
+			this.setVisible(false);
+
+		}else if (e.getSource()==this.menuItemAddCoup) {
+			FrmAddCoup addCoup = new FrmAddCoup();
+			addCoup.setVisible(true);
+		}else if (e.getSource()==this.menuItemDeletCoup) {
+			int i = dataTable.getSelectedRow();
+			BeanCouInfo sel = new BeanCouInfo();
+			sel=allCoup.get(i);
+			if(sel == null) {
+				JOptionPane.showMessageDialog(null, "未选中有效的序列","警告",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			try {
+				TakeOutUtil.couManager.delet(sel);
+				this.reloadCouTable();
+			}catch(BaseException e1) {
+				JOptionPane.showMessageDialog(null,e1.getMessage(),"警告", JOptionPane.ERROR_MESSAGE);
+			}
+		}else if(e.getSource()==this.menuItemProudct) {
+			FrmProduct product = new FrmProduct();
+			product.setVisible(true);
+		}else if(e.getSource()==this.menuItemBill) {
+			FrmRiderBill rider = new FrmRiderBill();
+			rider.setVisible(true);
+		}else if(e.getSource()==this.menuItemChangeCoup) {
+			if(curCoup==null) {
+				JOptionPane.showMessageDialog(null, "未选中优惠！！","警告",JOptionPane.ERROR_MESSAGE);
+			}else {
+				FrmChangeCoup coup = new FrmChangeCoup();
+				coup.setVisible(true);
+			}
 		}
 	}
 }

@@ -17,6 +17,8 @@ public interface IUserManager {
      public BeanUserInfo regist(String name,String phoneNumber,String gender,Boolean ismember) throws BaseException;
      public void delete(BeanUserInfo user) throws BaseException;
      public List<BeanUserInfo> loadAll() throws BaseException;
+     public BeanUserInfo changeInfo(BeanUserInfo user)throws BaseException;
+     public void changePwd(BeanUserInfo user,String oldPwd,String newPwd1,String newPwd2) throws BaseException;
      
      
 }

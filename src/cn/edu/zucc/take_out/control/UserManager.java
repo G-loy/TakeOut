@@ -27,22 +27,27 @@ public class UserManager implements IUserManager {
 	@Override
 	public BeanUserInfo login(String phoneNumber, String pwd) throws BaseException{
 		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
 		Connection conn = null;
 		PreparedStatement pst = null;
 		ResultSet rst = null;
 		BeanUserInfo  user = new BeanUserInfo();
 		try {
 			conn=DruidUtil.getConnection();
-			String sql = "SELECT user_phone,user_pwd FROM User_info WHERE user_phone=?";
+			String sql = "SELECT user_id,user_name,user_gender,user_pwd,user_phone,user_email,user_city,user_regist_time,is_member,member_ddl FROM User_info WHERE user_phone=?";
 			pst=conn.prepareStatement(sql); 
 			pst.setString(1, phoneNumber);
 			rst=pst.executeQuery();
 			if(!rst.next()) {
 				throw new BusinessException(" 该用户不存在");
 			}
-			user.setUserPhone(rst.getString(1));
-			user.setUserPwd(rst.getString(2));
+			user.setUserId(rst.getInt(1));
+			user.setUserName(rst.getString(2));
+			user.setUserGender(rst.getString(3));
+			user.setUserPwd(rst.getString(4));
+			user.setUserPhone(rst.getString(5));
+			user.setUserEmail(rst.getString(6));
+			user.setUserCity(rst.getString(7));
+			user.setUserRegistTime(rst.getDate(8));
 			if(!user.getUserPwd().equals(pwd)) {
 				throw new BusinessException("密码错误");
 			}
@@ -188,6 +193,61 @@ public class UserManager implements IUserManager {
 		}
 
 	}
+	@Override
+	public BeanUserInfo changeInfo(BeanUserInfo user) throws BaseException {
+		// TODO Auto-generated method stub
+		Connection connection = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		try {
+			connection=DruidUtil.getConnection();
+			String sql = "UPDATE User_info SET user_name=?,user_gender=?,user_phone=?,user_email=?,user_city=? WHERE user_id=?";
+			pst = connection.prepareStatement(sql);
+			pst.setString(1, String.valueOf(user.getUserName()));
+			pst.setString(2, String.valueOf(user.getUserGender()));
+			pst.setString(3, String.valueOf(user.getUserPhone()));
+			pst.setString(4, String.valueOf(user.getUserEmail()));
+			pst.setString(5, String.valueOf(user.getUserCity()));
+			pst.setInt(6, user.getUserId());
+			pst.execute();
+			return user;
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+		    DruidUtil.releaseSqlConnection(rst, pst, connection);
+		}
+		return null;
+	}
+	@Override
+	public void changePwd(BeanUserInfo user, String oldPwd, String newPwd1, String newPwd2)
+			throws BaseException {
+		// TODO Auto-generated method stub
+		Connection connection  = null;
+		PreparedStatement st =null;
+		if(oldPwd==null||newPwd1==null||newPwd2==null){
+			throw new BusinessException("输入不得为空");
+		}
+		if(oldPwd.compareTo(user.getUserPwd())!=0) {
+			throw new BusinessException("原密码错误");
+		}
+		if (newPwd1.compareTo(newPwd2)!=0) {
+			throw new BusinessException("两次密码不相同");
+		}
+		try {
+			connection = DruidUtil.getConnection();
+			String sql = "UPDATE User_info SET user_pwd = ? where user_id = ?";
+			st =connection.prepareStatement(sql);
+			st.setString(1, newPwd1);
+			st.setInt(2, user.getUserId());
+			int count = st.executeUpdate();
+			System.out.println("更新记录"+count+"条");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			DruidUtil.releaseSqlConnection(null, st, connection);
+		}
+	}
+	
 
 }
 

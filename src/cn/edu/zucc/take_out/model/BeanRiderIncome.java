@@ -9,13 +9,33 @@ import java.util.Date;
     @date 2020年7月4日上午8:24:59
 */
 public class BeanRiderIncome {
+	
+	public static final String[] BEAN_RIDER_INCOME =  {"账单ID","骑手ID","订单ID","入账时间","用户评价","单笔收入"};
+	
+	 public String getCell(int col) {
+		 if(col==0) return String.valueOf(getRiderIncomeId());
+		 else if(col==1) return String.valueOf(getRiderId());
+		 else if(col==2) return String.valueOf(getOrderId());
+		 else if(col==3) return String.valueOf(getTime());
+		 else if(col==4) return String.valueOf(getUserEval());
+		 else return"";
+	 }
+	
+	
 	private int riderIncomeId;
 	private int riderId;
 	private int orderId;
 	private Date time;
 	private String userEval;
+	private double income;
 	
 	
+	public double getIncome() {
+		return income;
+	}
+	public void setIncome(double income) {
+		this.income = income;
+	}
 	public int getRiderIncomeId() {
 		return riderIncomeId;
 	}

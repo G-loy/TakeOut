@@ -1,4 +1,4 @@
-package cn.edu.zucc.take_out.ui;
+package cn.edu.zucc.take_out.ui.admin;
 
 import java.awt.EventQueue;
 

@@ -14,6 +14,9 @@ import javax.swing.border.EmptyBorder;
 import cn.edu.zucc.take_out.TakeOutUtil;
 import cn.edu.zucc.take_out.model.BeanAdminInfo;
 import cn.edu.zucc.take_out.model.BeanUserInfo;
+import cn.edu.zucc.take_out.ui.admin.FrmAdminMain;
+import cn.edu.zucc.take_out.ui.admin.FrmRegister;
+import cn.edu.zucc.take_out.ui.user.FrmUserMain;
 import cn.edu.zucc.take_out.util.BaseException;
 
 import java.awt.GridLayout;
@@ -29,7 +32,8 @@ import java.awt.event.ActionEvent;
     @date 2020年7月4日上午10:21:26
 */
 public class FrmChoose extends JFrame{
-	 static FrmChoose frame = new FrmChoose();
+	
+	public static FrmChoose frame = new FrmChoose();
 	private  JPanel contentPane = new JPanel();
 	private JPanel panelYonghu = new JPanel();
 	private JPanel panel = new JPanel();
@@ -194,10 +198,13 @@ public class FrmChoose extends JFrame{
 					String pwd = new String(textField_Mima.getPassword());
 					try {
 						BeanUserInfo.currentLoginUser=TakeOutUtil.userManger.login(phoneNumber, pwd);
+						frame.setVisible(false);
+		                FrmUserMain fuser= new FrmUserMain();
+		            	fuser.setVisible(true);
 					}catch(BaseException e1) {
 						JOptionPane.showMessageDialog(null, e1.getMessage(), "Lucida Grande", JOptionPane.ERROR_MESSAGE);
+						frame.setVisible(true);
 					}
-					frame.setVisible(false);
 				}
 				
 			}

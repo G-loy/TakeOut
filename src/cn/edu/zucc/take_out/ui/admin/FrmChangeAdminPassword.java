@@ -1,4 +1,4 @@
-package cn.edu.zucc.take_out.ui;
+package cn.edu.zucc.take_out.ui.admin;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 
 import cn.edu.zucc.take_out.TakeOutUtil;
 import cn.edu.zucc.take_out.model.BeanAdminInfo;
+import cn.edu.zucc.take_out.ui.FrmChoose;
 import cn.edu.zucc.take_out.util.BaseException;
 
 import javax.swing.JLabel;

@@ -3,6 +3,18 @@ package cn.edu.zucc.take_out.model;
 import java.util.Date;
 
 public class BeanCouInfo {
+	
+	public static final String[] CouTableTitle= {"优惠券ID","优惠金额","集券要求","开始时间","结束时间"};
+	
+	 public String getCell(int col) {
+		 if(col==0) return String.valueOf(getCoupId());
+		 else if(col==1) return String.valueOf(getCoupMoney());
+		 else if(col==2) return String.valueOf(getCollRequest());
+		 else if(col==3) return String.valueOf(getStartTime());
+		 else if(col==4) return String.valueOf(getFinishTime());
+		 else return"";
+	 }
+	
      private int coupId;
      private double coupMoney;
      private int collRequest;
