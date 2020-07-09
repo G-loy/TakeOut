@@ -103,4 +103,30 @@ public class ShopManager implements IShopManager{
 		}
 	}
 
+	@Override
+	public List<String> loadAllName() throws BaseException {
+		// TODO Auto-generated method stub
+		List<String> result=new ArrayList<String>();
+		Connection connection = null;
+		PreparedStatement st = null;
+		ResultSet rst =null;
+		try {
+			connection = DruidUtil.getConnection();
+			String sql = "SELECT shop_name from Shop_info";
+			st = connection.prepareStatement(sql);
+			rst = st.executeQuery();
+			while(rst.next()) {
+			  String shopName = rst.getString(1);
+			  
+               result.add(shopName);			
+			}
+			System.out.println(result.size());
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DruidUtil.releaseSqlConnection(rst, st, connection);
+		}
+		return result;
+	}
+
 }

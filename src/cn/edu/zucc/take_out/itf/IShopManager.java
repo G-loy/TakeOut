@@ -16,4 +16,5 @@ public interface IShopManager {
      public BeanShopInfo regist(String shopName,int star)throws BaseException;
      public void delete(BeanShopInfo shop)throws BaseException;
      public List<BeanShopInfo> loadAll() throws BaseException;
+     public List<String> loadAllName() throws BaseException;
 }

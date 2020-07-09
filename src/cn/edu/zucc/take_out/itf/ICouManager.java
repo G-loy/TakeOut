@@ -13,7 +13,7 @@ import cn.edu.zucc.take_out.util.BaseException;
  * @date:2020年7月6日
  */
 public interface ICouManager {	     
-	     public BeanCouInfo add(double coupMoney,int collRequest,Date StartTime,Date finishTime) throws BaseException;
+	     public BeanCouInfo add(double coupMoney,int collRequest,Date StartTime,Date finishTime,String shopName) throws BaseException;
 	     public void delet(BeanCouInfo cou) throws BaseException;
 	     public List<BeanCouInfo> loadAll() throws BaseException;
 	     public void changeCoup(BeanCouInfo coup) throws BaseException;

@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import cn.edu.zucc.take_out.TakeOutUtil;
 import cn.edu.zucc.take_out.model.BeanAddress;
 import cn.edu.zucc.take_out.model.BeanAdminInfo;
+import cn.edu.zucc.take_out.model.BeanUserHasCouInfo;
 import cn.edu.zucc.take_out.model.BeanUserInfo;
 import cn.edu.zucc.take_out.util.BaseException;
 
@@ -51,9 +52,18 @@ public class FrmUserMain extends JFrame implements ActionListener{
 	private JTable dataTable = new JTable();
 	
 	private Object[] tblAddressTitle = BeanAddress.ADDRESS_TITLE;
+	private Object[] tblUserHasCouInfoTitle = BeanUserHasCouInfo.BEANUSERHASCOUINFO_TITEL;
+	
+	
 	private Object[][] tblAddressDate;
+	private Object[] [] tblUserHasCouInfoTitleDate;
+	
 	private DefaultTableModel tablModel = new DefaultTableModel();
+		
 	private List<BeanAddress> allAddress = null;
+	private List<BeanUserHasCouInfo> allUserHasCoup  = null;
+	
+    private BeanAddress curAddress = null;
 	
 	public  void reloadAddressTable() {
 		try {
@@ -62,7 +72,7 @@ public class FrmUserMain extends JFrame implements ActionListener{
 			// TODO: handle exception
 			JOptionPane.showMessageDialog(null, e.getMessage(), "警告", JOptionPane.ERROR_MESSAGE);
 		}
-		tblAddressDate = new Object[allAddress.size()][tblAddressTitle.length];
+		tblAddressDate = new Object[allAddress.size()][BeanAddress.ADDRESS_TITLE.length];
 		
 		for(int i=0;i<allAddress.size();i++) {
 			for(int j=0;j<BeanAddress.ADDRESS_TITLE.length;j++) {
@@ -79,6 +89,32 @@ public class FrmUserMain extends JFrame implements ActionListener{
 		this.dataTable.repaint();
 		this.dataTable.updateUI();
 	}
+	
+	public void reloadUserHasCouInfo() {
+		try {
+			allUserHasCoup=TakeOutUtil.userHasCouInfoManager.loadAllbyUserId(BeanUserInfo.currentLoginUser);
+		}catch (BaseException e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(null, e.getMessage(), "警告", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblUserHasCouInfoTitleDate = new Object[allUserHasCoup.size()][BeanUserHasCouInfo.BEANUSERHASCOUINFO_TITEL.length];
+		for(int i=0;i<allUserHasCoup.size();i++) {
+			for(int j=0;j<BeanUserHasCouInfo.BEANUSERHASCOUINFO_TITEL.length;j++) {
+				tblUserHasCouInfoTitleDate[i][j] = allUserHasCoup.get(i).getCell(j);
+				System.out.println(tblUserHasCouInfoTitleDate.toString());
+			}
+		}
+		tablModel.setDataVector(tblUserHasCouInfoTitleDate, tblAddressTitle);
+		dataTable.setModel(tablModel);
+		dataTable.setBounds(0, 49, 884, 421);
+		this.dataTable.validate();
+		this.dataTable.repaint();
+		this.dataTable.updateUI();
+	}
+	
+	
+	
 	
 	
 	/**
@@ -120,19 +156,35 @@ public class FrmUserMain extends JFrame implements ActionListener{
 		menuBar.add(mnNewMenu_1);
 		
 		mnNewMenu_1.add(menuItemAddAddress);
+		menuItemAddAddress.addActionListener(this);
 		
 		mnNewMenu_1.add(menuItemDeletAddress);
+		menuItemDeletAddress.addActionListener(this);
 		
 		mnNewMenu_1.add(menuItemRefresh);
-		menuItemAddAddress.addActionListener(this);
-		menuBar.add(mnNewMenu_2);
+		menuItemRefresh.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				reloadAddressTable();
+			}
+		});
 		
+		menuBar.add(mnNewMenu_2);
 		mnNewMenu_2.add(menuItemProduct);
 		menuItemProduct.addActionListener(this);
-		menuBar.add(mnNewMenu_3);
 		
+		menuBar.add(mnNewMenu_3);
 		mnNewMenu_3.add(menuItemCoup);
-		menuItemCoup.addActionListener(this);
+		menuItemCoup.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				reloadUserHasCouInfo();
+			}
+		});
 		menuBar.add(mnNewMenu_4);
 		
 		mnNewMenu_4.add(menuItemJDSQ);
@@ -145,7 +197,7 @@ public class FrmUserMain extends JFrame implements ActionListener{
 		dataTable.setBounds(0, 45, 879, 481);
 		contentPane.add(dataTable);
 		menuItemBuy.addActionListener(this);
-		reloadAddressTable();
+		
 		
 	}
 
@@ -159,6 +211,21 @@ public class FrmUserMain extends JFrame implements ActionListener{
 			FrmChangePwd pwd = new FrmChangePwd();
 			pwd.setVisible(true);
 			this.setVisible(false);
+		}else if(e.getSource()==menuItemAddAddress) {
+			FrmAddAddress address = new FrmAddAddress();
+			address.setVisible(true);
+		}else if(e.getSource() == menuItemDeletAddress) {
+			int i = dataTable.getSelectedRow();
+			curAddress=allAddress.get(i);
+			try {
+				TakeOutUtil.addressManager.deletAddress(curAddress);
+				JOptionPane.showMessageDialog(null, "您已成功删除一条配送地址", "提示", JOptionPane.ERROR_MESSAGE);
+				reloadAddressTable();
+			} catch (BaseException e1) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "警告", JOptionPane.ERROR_MESSAGE);
+			}
+		
 		}
 	}
 }

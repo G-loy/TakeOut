@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class BeanCouInfo {
 	
-	public static final String[] CouTableTitle= {"优惠券ID","优惠金额","集券要求","开始时间","结束时间"};
+	public static final String[] CouTableTitle= {"优惠券ID","优惠金额","集券要求","开始时间","结束时间","商家ID"};
 	
 	 public String getCell(int col) {
 		 if(col==0) return String.valueOf(getCoupId());
@@ -12,6 +12,7 @@ public class BeanCouInfo {
 		 else if(col==2) return String.valueOf(getCollRequest());
 		 else if(col==3) return String.valueOf(getStartTime());
 		 else if(col==4) return String.valueOf(getFinishTime());
+		 else if(col==5) return String.valueOf(getShopId());	
 		 else return"";
 	 }
 	
@@ -20,6 +21,14 @@ public class BeanCouInfo {
      private int collRequest;
      private Date startTime;
      private Date finishTime;
+     private int shopId;
+    
+	public int getShopId() {
+		return shopId;
+	}
+	public void setShopId(int shopId) {
+		this.shopId = shopId;
+	}
 	public int getCoupId() {
 		return coupId;
 	}

@@ -9,6 +9,17 @@ import java.util.Date;
     @date 2020年7月4日上午8:35:05
 */
 public class BeanUserHasCouInfo {
+	
+	public static final String[] BEANUSERHASCOUINFO_TITEL = {"优惠券ID","商家ID","优惠金额","数量","截止日期"};
+	
+	public String getCell(int col) {
+		 if(col==0) return String.valueOf(getCouId());
+		 else if(col==1) return String.valueOf(getDiscountMoney());
+		 else if(col==2) return String.valueOf(getNumber());
+		 else if(col==3) return String.valueOf(getDdl());
+		 else return"";
+	 }
+	
       private int userId;
       private int couId;
       private int shopId;

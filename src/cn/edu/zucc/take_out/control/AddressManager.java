@@ -57,6 +57,9 @@ public class AddressManager implements IAddressManager {
         Connection connection = null;
         PreparedStatement pst = null;
         ResultSet rst = null;
+        if (address==null) {
+        	throw new BusinessException("为选中有效序列");
+        }        
         try {
      	   
      	   connection = DruidUtil.getConnection();
@@ -91,10 +94,10 @@ public class AddressManager implements IAddressManager {
                  addressInfo.setUserId(rst.getInt(2));
                  addressInfo.setProvince(rst.getString(3));
                  addressInfo.setCity(rst.getString(4));
-                 addressInfo.setDistance(rst.getString(6));
-                 addressInfo.setAddress(rst.getString(7));
-                 addressInfo.setLinkman(rst.getString(8));
-                 addressInfo.setPhoneNumber(rst.getString(9));
+                 addressInfo.setDistance(rst.getString(5));
+                 addressInfo.setAddress(rst.getString(6));
+                 addressInfo.setLinkman(rst.getString(7));
+                 addressInfo.setPhoneNumber(rst.getString(8));
 				result.add(addressInfo);
 			}
 			System.out.println(result.size());

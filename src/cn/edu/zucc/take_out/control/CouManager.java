@@ -22,20 +22,31 @@ import cn.edu.zucc.take_out.util.DruidUtil;
 public class CouManager implements ICouManager {
 
 	@Override
-	public BeanCouInfo add(double coupMoney, int collRequest, Date StartTime, Date finishTime) throws BaseException {
+	public BeanCouInfo add(double coupMoney, int collRequest, Date StartTime, Date finishTime,String shopName) throws BaseException {
 		// TODO Auto-generated method stub
 		
 		Connection connection =null;
 		PreparedStatement st = null;
 		ResultSet rs =null;
+		
+		int shopId = 0;
+		
 		try {
 			connection =DruidUtil.getConnection();
-			String sql = "insert into Cou_info(coup_money,coll_request,start_time,finish_time)values(?,?,?,?)";
+			String sql = "SELECT shop_id FROM Shop_info WHERE shop_name = ?";
+			st = connection.prepareStatement(sql);
+			st.setString(1, shopName);
+			rs = st.executeQuery();
+			while(rs.next()) {
+				shopId = rs.getInt(1);
+			}
+			sql = "insert into Cou_info(coup_money,coll_request,start_time,finish_time,shop_id)values(?,?,?,?,?)";
 			st =connection.prepareStatement(sql);
 			st.setDouble(1, coupMoney);
 			st.setInt(2, collRequest);
 			st.setDate(3, StartTime);
 			st.setDate(4, finishTime);
+			st.setInt(5, shopId);
 			int count = st.executeUpdate();
 			System.out.println("成功添加一类优惠券");
 		}catch(Exception e) {
@@ -84,6 +95,7 @@ public class CouManager implements ICouManager {
                 coup.setCollRequest(rst.getInt(3));
                 coup.setStartTime(rst.getDate(4));
                 coup.setFinishTime(rst.getDate(5));
+                coup.setShopId(rst.getInt(6));
                 result.add(coup);
 			}
 			System.out.println(result.size());
@@ -103,13 +115,14 @@ public class CouManager implements ICouManager {
 		ResultSet rst =null;
 		try {
 			connection = DruidUtil.getConnection();
-			String sql ="UPDATE Cou_info SET coup_money = ?,coll_request=?,start_time=?,finish_time=? WHERE coup_id = ?  ";
+			String sql ="UPDATE Cou_info SET coup_money = ?,coll_request=?,start_time=?,finish_time=?,shop_id = ? WHERE coup_id = ?  ";
 			st = connection.prepareStatement(sql);
             st.setDouble(1, coup.getCoupMoney());
             st.setInt(2, coup.getCollRequest());
             st.setDate(3, (java.sql.Date)coup.getStartTime());
             st.setDate(4, (java.sql.Date)coup.getFinishTime());
             st.setInt(5,coup.getCoupId());
+            st.setInt(6, coup.getShopId());
             st.execute();
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -117,5 +130,6 @@ public class CouManager implements ICouManager {
 			DruidUtil.releaseSqlConnection(rst, st, connection);
 		}
 	}
+	
 
 }

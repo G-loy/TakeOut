@@ -42,14 +42,14 @@ public class ProductManager implements IProductManager {
 					throw new BusinessException("该商品已经存在");
 				}
 			}
-//			sql = "SELECT class_id FROM Product_class WHERE class_name = ?";
-//			pst=con.prepareStatement(sql);
-//			pst.setString(1, className);
-//			rst = pst.executeQuery();
-//			while(rst.next()) {
-//				classId = rst.getInt(1);
-//				
-//			}
+			sql = "SELECT class_id FROM Product_class WHERE class_name = ?";
+			pst=con.prepareStatement(sql);
+			pst.setString(1, className);
+			rst = pst.executeQuery();
+			while(rst.next()) {
+				classId = rst.getInt(1);
+				
+			}
 			sql = "insert into Product_info(class_id,product_name,product_price,pref_price,number)values(?,?,?,?,?)";
 			pst=con.prepareStatement(sql);
 			pst.setInt(1, classId);
@@ -103,9 +103,39 @@ public class ProductManager implements IProductManager {
 			while(rst.next()) {
               BeanProductInfo product = new BeanProductInfo();
               product.setProductId(rst.getInt(1));
-              product.setProductName(rst.getString(2));
-              product.setProductPrice(rst.getDouble(3));
-              product.setPrefPrice(rst.getDouble(4));
+              product.setProductName(rst.getString(3));
+              product.setProductPrice(rst.getDouble(4));
+              product.setPrefPrice(rst.getDouble(5));
+              product.setNumber(rst.getInt(6));
+              result.add(product);
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DruidUtil.releaseSqlConnection(rst, st, connection);
+		}
+		return result;
+	}
+
+	@Override
+	public List<BeanProductInfo> loadAll() throws BaseException {
+		// TODO Auto-generated method stub
+		List<BeanProductInfo> result=new ArrayList<BeanProductInfo>();
+		Connection connection = null;
+		PreparedStatement st = null;
+		ResultSet rst =null;
+		try {
+			connection = DruidUtil.getConnection();
+			String sql = "SELECT * from Product_info ";
+			st = connection.prepareStatement(sql);
+			rst = st.executeQuery();
+			while(rst.next()) {
+              BeanProductInfo product = new BeanProductInfo();
+              product.setProductId(rst.getInt(1));
+              product.setProductName(rst.getString(3));
+              product.setProductPrice(rst.getDouble(4));
+              product.setPrefPrice(rst.getDouble(5));
+              product.setNumber(rst.getInt(6));
               result.add(product);
 			}
 		}catch(SQLException e) {

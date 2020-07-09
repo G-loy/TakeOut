@@ -17,5 +17,6 @@ public interface IProductManager {
 	public BeanProductInfo add(String className,String product_name,Double price,Double prefPrice,Integer number)throws BaseException;
 	public void delet(BeanProductInfo product)throws BaseException;
 	public List<BeanProductInfo> loadAll(BeanProductClass productClass) throws BaseException;
+	public List<BeanProductInfo> loadAll() throws BaseException;
 
 }

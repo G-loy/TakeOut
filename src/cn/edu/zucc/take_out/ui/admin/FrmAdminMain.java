@@ -17,6 +17,7 @@ import javax.swing.table.TableModel;
 import cn.edu.zucc.take_out.TakeOutUtil;
 import cn.edu.zucc.take_out.model.BeanAdminInfo;
 import cn.edu.zucc.take_out.model.BeanCouInfo;
+import cn.edu.zucc.take_out.model.BeanMjPlan;
 import cn.edu.zucc.take_out.model.BeanRiderInfo;
 import cn.edu.zucc.take_out.model.BeanShopInfo;
 import cn.edu.zucc.take_out.model.BeanUserInfo;
@@ -70,7 +71,12 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 	private JMenuItem MenuItemRefUser = new JMenuItem("刷新");
 	private JMenuItem MenuItemRefShop = new JMenuItem("刷新");
 	private JMenuItem menuItemRefreshCoup = new JMenuItem("刷新");
-
+	
+	private JMenuItem menuItemAddMJplan = new JMenuItem("添加满减方案");
+	private JMenuItem mnenuItemDeletMJPlan = new JMenuItem("删除满减方案");
+	private JMenuItem menuItemChange = new JMenuItem("修改满减方案");
+	private JMenuItem menuItemRefresh = new JMenuItem("刷新");
+	
 
 	//将所有管理员显示在dataTable上
 	private Object tblAdminTitle[] = BeanAdminInfo.adminTableTitle;
@@ -78,13 +84,14 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 	private Object tbShopTitle[] = BeanShopInfo.SHOP_TITLE;
 	private Object tbRiderTitle[] = BeanRiderInfo.Rider_TITLE;
 	private Object tbCouTitle[] = BeanCouInfo.CouTableTitle;
+	private Object tbMJPlanTitle[] = BeanMjPlan.MjPlANTITLE;
 
 	private Object tblAdminDate[][];
 	private Object tblUserDate[][];
 	private Object tblShopDate[][];
 	private Object tblRiderDate[][];
 	private Object tblCouDate[][];
-
+    private Object tblMJPlanDate[][];
 
 	DefaultTableModel tablModel = new DefaultTableModel();
 	private JTable dataTable = new JTable();
@@ -94,12 +101,14 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 	List<BeanShopInfo>  allShop = null;
 	List<BeanRiderInfo> allRider = null;
 	List<BeanCouInfo> allCoup = null;
+	List<BeanMjPlan> allMjPlan = null;
 	private final JMenuItem menuItemChangeCoup = new JMenuItem("修改优惠");
-
+    
 	public static BeanCouInfo curCoup = null;
+    public static BeanMjPlan curMj = null;
 
-
-
+    public static Boolean isCoup =false;
+    public static Boolean isMj=false;
 
 	private void reloadAdminTable() {
 		try {
@@ -197,6 +206,8 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 
 
 	private void reloadCouTable() {
+		isCoup=true;
+		isMj=false;
 		try {
 			allCoup = TakeOutUtil.couManager.loadAll();
 		}catch(BaseException e) {
@@ -213,6 +224,30 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 		}
 
 		tablModel.setDataVector(tblCouDate, tbCouTitle);
+		dataTable.setModel(tablModel);
+		dataTable.setBounds(0, 49, 884, 421);
+		this.dataTable.validate();
+		this.dataTable.repaint();
+	}
+	
+	private void reloadMJPlanTable() {
+		isCoup=false;
+		isMj=true;
+		try {
+			allMjPlan=TakeOutUtil.MJPlanManager.loadAll();
+			
+		}catch(BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "警告", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblMJPlanDate = new Object[allMjPlan.size()][BeanMjPlan.MjPlANTITLE.length];
+		for(int i=0;i<allMjPlan.size();i++) {
+			for(int j=0;j<BeanMjPlan.MjPlANTITLE.length;j++) {
+				tblMJPlanDate[i][j] = allMjPlan.get(i).getCell(j);
+				System.out.println(tblMJPlanDate.toString());
+			}
+		}
+		tablModel.setDataVector(tblMJPlanDate, tbMJPlanTitle);
 		dataTable.setModel(tablModel);
 		dataTable.setBounds(0, 49, 884, 421);
 		this.dataTable.validate();
@@ -300,40 +335,68 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 
 		menuBar.add(MenuProduct);
 		MenuProduct.add(menuItemProudct);
+		
+		JMenu menuMJPlan = new JMenu("满减方案");
+		menuBar.add(menuMJPlan);
+		
+		
+		menuMJPlan.add(menuItemAddMJplan);
+		menuItemAddMJplan.addActionListener(this);
+		
+		
+		menuMJPlan.add(mnenuItemDeletMJPlan);
+		mnenuItemDeletMJPlan.addActionListener(this);
+		
+		
+		menuMJPlan.add(menuItemChange);
+		menuItemChange.addActionListener(this);
+		
+		
+		menuMJPlan.add(menuItemRefresh);
+		menuItemRefresh.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				reloadMJPlanTable();
+			}
+		});
 		menuItemProudct.addActionListener(this);
-		dataTable.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				int i  = dataTable.getSelectedRow();
-				curCoup = allCoup.get(i);
-			}
-		} );
+//		dataTable.addMouseListener(new MouseListener() {
+//
+//			@Override
+//			public void mouseReleased(MouseEvent e) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			@Override
+//			public void mousePressed(MouseEvent e) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				// TODO Auto-generated method stub
+//				if(isCoup==true) {
+//				int i  = dataTable.getSelectedRow();
+//				curCoup = allCoup.get(i);
+//				}
+//			}
+//		} );
 
 
 
@@ -474,11 +537,36 @@ public class FrmAdminMain extends JFrame implements ActionListener {
 			FrmRiderBill rider = new FrmRiderBill();
 			rider.setVisible(true);
 		}else if(e.getSource()==this.menuItemChangeCoup) {
+			int i =dataTable.getSelectedRow();
+			curCoup=allCoup.get(i);
 			if(curCoup==null) {
 				JOptionPane.showMessageDialog(null, "未选中优惠！！","警告",JOptionPane.ERROR_MESSAGE);
 			}else {
 				FrmChangeCoup coup = new FrmChangeCoup();
 				coup.setVisible(true);
+			}
+		}else if(e.getSource()==this.menuItemAddMJplan) {
+			FrmMJPlan mj= new FrmMJPlan();
+			mj.setVisible(true);
+		}else if(e.getSource()==this.mnenuItemDeletMJPlan) {
+			int i =dataTable.getSelectedRow();
+			BeanMjPlan curMjPlan = allMjPlan.get(i);
+			try {
+				TakeOutUtil.MJPlanManager.deletPlan(curMjPlan);
+				reloadMJPlanTable();
+			} catch (BaseException e1) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "警告", JOptionPane.ERROR_MESSAGE);
+			}
+		}else if(e.getSource()==this.menuItemChange) {
+			int i = dataTable.getSelectedRow();
+			curMj=allMjPlan.get(i);
+			System.out.println(curMj.isCanADD());
+			if(curMj==null) {
+				JOptionPane.showMessageDialog(null, "为选中方案", "警告", JOptionPane.ERROR_MESSAGE);
+			}else {
+				FrmChangerMjPlan plan = new FrmChangerMjPlan();
+				plan.setVisible(true);
 			}
 		}
 	}
