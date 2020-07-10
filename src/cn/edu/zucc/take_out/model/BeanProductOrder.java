@@ -9,23 +9,22 @@ import java.util.Date;
     @date 2020年7月4日上午8:20:22
 */
 public class BeanProductOrder {
-     private int productOrderId;
+     private int orderId;
      private int ShopId;
      private int addressId;
      private int userId;
      private int mjId;
      private int riderId;
      private int coupId;
-     private int orderId;
      private double orgMoney;
      private double finallyMoney;
      private Date drderTime;
      private Date serviceTime;
-	public int getProductOrderId() {
-		return productOrderId;
+	public int getOrderId() {
+		return orderId;
 	}
-	public void setProductOrderId(int productOrderId) {
-		this.productOrderId = productOrderId;
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
 	}
 	public int getShopId() {
 		return ShopId;
@@ -62,12 +61,6 @@ public class BeanProductOrder {
 	}
 	public void setCoupId(int coupId) {
 		this.coupId = coupId;
-	}
-	public int getOrderId() {
-		return orderId;
-	}
-	public void setOrderId(int orderId) {
-		this.orderId = orderId;
 	}
 	public double getOrgMoney() {
 		return orgMoney;

@@ -48,6 +48,8 @@ public class FrmAddProduct extends JFrame {
 	private JLabel lblNewLabel_4 = new JLabel("优惠价格");
 	private JLabel lblNewLabel_5 = new JLabel("数量");
 	private JComboBox<String> comboBox = new JComboBox();
+	private final JLabel lblNewLabel_6 = new JLabel("商家名");
+	private final JComboBox comboBox_1 = new JComboBox();
 
 
 	/**
@@ -135,6 +137,19 @@ public class FrmAddProduct extends JFrame {
 		JButton btnNewButton = new JButton("确定");
 		btnNewButton.setBounds(281, 117, 145, 47);
 		contentPane.add(btnNewButton);
+		lblNewLabel_6.setBounds(39, 233, 76, 16);
+		
+		contentPane.add(lblNewLabel_6);
+		comboBox_1.setBounds(139, 229, 130, 27);
+		
+		contentPane.add(comboBox_1);
+		try {
+			for(int i=0;i<TakeOutUtil.shopManger.loadAllName().size();i++) {
+				comboBox_1.addItem(TakeOutUtil.shopManger.loadAllName().get(i));
+			}
+		}catch(BaseException e) {
+			e.printStackTrace();
+		}
 		btnNewButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -146,8 +161,9 @@ public class FrmAddProduct extends JFrame {
 					Double price = Double.valueOf(textFieldPrefPrice.getText());
 					Double prefPrice = Double.valueOf(textFieldPrefPrice.getText());
 					int number = Integer.valueOf(textFieldNumber.getText());
+					String shopName = String.valueOf(comboBox_1.getSelectedItem());
 					try {
-						TakeOutUtil.productManager.add(className, name, price, prefPrice, number);
+						TakeOutUtil.productManager.add(className, name, price, prefPrice, number,shopName);
 						JOptionPane.showMessageDialog(null,"您以成功添加商品","警告", JOptionPane.ERROR_MESSAGE);
 					} catch (BaseException e1) {
 						// TODO Auto-generated catch block

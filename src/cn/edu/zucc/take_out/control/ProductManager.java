@@ -24,9 +24,10 @@ public class ProductManager implements IProductManager {
 
 	@SuppressWarnings("resource")
 	@Override
-	public BeanProductInfo add(String className, String productName, Double price, Double prefPrice, Integer number)
+	public BeanProductInfo add(String className, String productName, Double price, Double prefPrice, Integer number,String shopName)
 			throws BaseException {
 		int classId = 0;
+		int shopId = 0;
 		// TODO Auto-generated method stub
 		Connection con  = null;
 		PreparedStatement pst = null;
@@ -42,6 +43,17 @@ public class ProductManager implements IProductManager {
 					throw new BusinessException("该商品已经存在");
 				}
 			}
+			
+			sql = "SELECT shop_id FROM Shop_info WHERE shop_name = ?";
+			pst=con.prepareStatement(sql);
+			pst.setString(1, shopName);
+			rst=pst.executeQuery();
+			while(rst.next()) {
+				shopId = rst.getInt(1);
+			}
+			
+			
+			
 			sql = "SELECT class_id FROM Product_class WHERE class_name = ?";
 			pst=con.prepareStatement(sql);
 			pst.setString(1, className);
@@ -50,13 +62,14 @@ public class ProductManager implements IProductManager {
 				classId = rst.getInt(1);
 				
 			}
-			sql = "insert into Product_info(class_id,product_name,product_price,pref_price,number)values(?,?,?,?,?)";
+			sql = "insert into Product_info(class_id,product_name,product_price,pref_price,number,shop_id)values(?,?,?,?,?,?)";
 			pst=con.prepareStatement(sql);
 			pst.setInt(1, classId);
 			pst.setString(2, productName);
 		    pst.setDouble(3, price);
 		    pst.setDouble(4, prefPrice);
 		    pst.setInt(5, number);
+		    pst.setInt(6, shopId);
 		    pst.execute();
 			System.out.println("成功添加一个商品");
 		}catch(SQLException e) {

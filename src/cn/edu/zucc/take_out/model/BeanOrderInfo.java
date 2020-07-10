@@ -3,7 +3,7 @@ package cn.edu.zucc.take_out.model;
 public class BeanOrderInfo {
      private int orderId;
      private int productId;
-     private int numberId;
+     private int number;
      private double money;
      private double perDiscount;
 	public int getOrderId() {
@@ -18,11 +18,11 @@ public class BeanOrderInfo {
 	public void setProductId(int productId) {
 		this.productId = productId;
 	}
-	public int getNumberId() {
-		return numberId;
+	public int getNumber() {
+		return number;
 	}
-	public void setNumberId(int numberId) {
-		this.numberId = numberId;
+	public void setNumber(int number) {
+		this.number = number;
 	}
 	public double getMoney() {
 		return money;

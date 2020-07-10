@@ -15,4 +15,5 @@ public interface IAddressManager {
       public BeanAddress addAddress(int userId,String province,String city,String distance,String address,String linkman,String phonenumber) throws BaseException;
       public void deletAddress(BeanAddress address) throws BaseException;
       public List<BeanAddress> loadAll() throws BaseException;
+      public List<StringBuffer> loadAddress()throws BaseException;
 }

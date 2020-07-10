@@ -9,6 +9,7 @@ import java.util.List;
 
 import cn.edu.zucc.take_out.itf.IAddressManager;
 import cn.edu.zucc.take_out.model.BeanAddress;
+import cn.edu.zucc.take_out.model.BeanUserInfo;
 import cn.edu.zucc.take_out.util.BaseException;
 import cn.edu.zucc.take_out.util.BusinessException;
 import cn.edu.zucc.take_out.util.DruidUtil;
@@ -85,8 +86,9 @@ public class AddressManager implements IAddressManager {
 		ResultSet rst =null;
 		try {
 			connection = DruidUtil.getConnection();
-			String sql = "SELECT * from Address";
+			String sql = "SELECT * from Address WHERE user_id = ?";
 			st = connection.prepareStatement(sql);
+			st.setInt(1, BeanUserInfo.currentLoginUser.getUserId());
 			rst = st.executeQuery();
 			while(rst.next()) {
 				BeanAddress addressInfo=new BeanAddress();
@@ -109,4 +111,50 @@ public class AddressManager implements IAddressManager {
 		return result;
 	}
 
+	@Override
+	public List<StringBuffer> loadAddress() throws BaseException {
+		// TODO Auto-generated method stub
+		List<StringBuffer> result = new ArrayList<StringBuffer>();
+		Connection connection = null;
+		PreparedStatement pst = null;
+	    ResultSet rst = null;
+	    try {
+	    	connection = DruidUtil.getConnection();
+	    	String sql  = "SELECT address_id,province,city,distance,address FROM Address WHERE user_id = ?";
+	    	pst = connection.prepareStatement(sql);
+	    	pst.setInt(1, BeanUserInfo.currentLoginUser.getUserId());
+	    	rst=pst.executeQuery();
+	    	while(rst.next()) {
+	    		StringBuffer address = new StringBuffer();
+	    		address.append(rst.getInt(1));
+	    		address.append(rst.getString(2));
+	    		address.append(rst.getString(3));
+	    		address.append(rst.getString(4));
+	    		address.append(rst.getString(5));
+	    		result.add(address);
+	    	}
+	    }catch(SQLException e){
+	    	e.printStackTrace();
+	    }finally {
+	    	DruidUtil.releaseSqlConnection(rst, pst, connection);
+	    }
+		return result;
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

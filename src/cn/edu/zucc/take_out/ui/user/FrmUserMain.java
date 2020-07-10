@@ -226,6 +226,9 @@ public class FrmUserMain extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "警告", JOptionPane.ERROR_MESSAGE);
 			}
 		
+		}else if(e.getSource()==menuItemBuy) {
+			FrmBuy buy = new FrmBuy();
+			buy.setVisible(true);
 		}
 	}
 }

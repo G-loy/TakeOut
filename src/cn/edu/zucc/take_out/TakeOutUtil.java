@@ -23,6 +23,7 @@ import cn.edu.zucc.take_out.itf.IAddressManager;
 import cn.edu.zucc.take_out.itf.IAdminManager;
 import cn.edu.zucc.take_out.itf.ICouManager;
 import cn.edu.zucc.take_out.itf.IMJPlanManager;
+import cn.edu.zucc.take_out.itf.IOrderInfoManager;
 import cn.edu.zucc.take_out.itf.IProductClassManager;
 import cn.edu.zucc.take_out.itf.IProductManager;
 import cn.edu.zucc.take_out.itf.IRiderIncomeManager;
@@ -31,6 +32,7 @@ import cn.edu.zucc.take_out.itf.IShopManager;
 import cn.edu.zucc.take_out.itf.IUserHasCouInfoManager;
 import cn.edu.zucc.take_out.itf.IUserManager;
 import cn.edu.zucc.take_out.control.MJPlanManager;
+import cn.edu.zucc.take_out.control.OrderManager;
 
 public class TakeOutUtil {
 	
@@ -45,6 +47,7 @@ public class TakeOutUtil {
        public static IAddressManager addressManager = new AddressManager();
        public static IMJPlanManager MJPlanManager = new MJPlanManager();
        public static IUserHasCouInfoManager userHasCouInfoManager = new UserHasCouInfoManager();	   
+       public static IOrderInfoManager orderInfoManager = new OrderManager();
        
        
        public static java.sql.Date strToDate(String strDate) {  
