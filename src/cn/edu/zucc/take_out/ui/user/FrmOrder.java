@@ -44,6 +44,9 @@ public class FrmOrder extends JFrame {
 	private boolean isCoup;
 	private BeanProductOrder productor = null;
 	private int number  = 0;
+	
+	private JLabel lblNewLabel_10 = new JLabel("New label");
+	private JLabel lblNewLabel_12 = new JLabel("New label");
 
 	/**
 	 * Launch the application.
@@ -107,14 +110,32 @@ public class FrmOrder extends JFrame {
 					System.out.println("商家ID"+FrmBuy.curProduct.getShop_id());
 					System.out.println("CoupID"+coupId);
 					System.out.println(finallyMoney);
-					productor = TakeOutUtil.productOrderManager.add(FrmBuy.curProduct, BeanUserInfo.currentLoginUser, mjId, coupId, addressId,totalPriceBeforeMJ,finallyMoney, TakeOutUtil.strToDate(textField.getText()), "配送中");
-					if(coupId==0) {
-						isCoup=false;
-					}else {
-						isCoup = true;
-						TakeOutUtil.userHasCouInfoManager.used(coupId);             
+					
+					try {	
+						mjId=TakeOutUtil.MJPlanManager.getMJId(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id());
+						
+						if(coupId==0) {
+							isCoup=false;
+						}else {
+							isCoup = true;
+							TakeOutUtil.userHasCouInfoManager.used(coupId);             
+						}
+						number=Integer.valueOf(textFieldProductNumber.getText());
+						System.out.println("数量");
+						totalPriceBeforeMJ=FrmBuy.curProduct.getProductPrice()*number-TakeOutUtil.userHasCouInfoManager.getCutMoney(FrmBuy.curProduct);
+						lblNewLabel_12.setText(String.valueOf(TakeOutUtil.MJPlanManager.getMJMoney(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id())));
+						System.out.println("未满减之前的价格"+totalPriceBeforeMJ);
+						finallyMoney = totalPriceBeforeMJ-TakeOutUtil.MJPlanManager.getMJMoney(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id());
+						System.out.println("满减之后的价格"+finallyMoney);
+					} catch (BaseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-					number=Integer.valueOf(textFieldProductNumber.getText());
+					
+					lblNewLabel_10.setText(String.valueOf(finallyMoney));
+				    System.out.println(finallyMoney);
+					addressId = Integer.valueOf(getQuantity(String.valueOf(comboBox.getSelectedItem())));
+					productor = TakeOutUtil.productOrderManager.add(FrmBuy.curProduct, BeanUserInfo.currentLoginUser, mjId, coupId, addressId,totalPriceBeforeMJ,finallyMoney, TakeOutUtil.strToDate(textField.getText()), "配送中");
 					TakeOutUtil.orderInfoManager.add(productor.getOrderId(),FrmBuy.curProduct,number, isCoup);
 					TakeOutUtil.productManager.sold(FrmBuy.curProduct, number);
 					FrmOrder.this.setVisible(false);
@@ -198,7 +219,7 @@ public class FrmOrder extends JFrame {
 		lblNewLabel_8.setBounds(39, 428, 122, 29);
 		contentPane.add(lblNewLabel_8);
 
-		JLabel lblNewLabel_10 = new JLabel("New label");
+
 		lblNewLabel_10.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		lblNewLabel_10.setBounds(268, 422, 126, 41);
 		contentPane.add(lblNewLabel_10);
@@ -208,32 +229,18 @@ public class FrmOrder extends JFrame {
 		lblNewLabel_11.setBounds(39, 386, 131, 30);
 		contentPane.add(lblNewLabel_11);
 
-		JLabel lblNewLabel_12 = new JLabel("New label");
+		
 		lblNewLabel_12.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		lblNewLabel_12.setBounds(268, 391, 130, 25);
 		contentPane.add(lblNewLabel_12);
-		
 		try {
 			for(int i = 0; i<TakeOutUtil.addressManager.loadAddress().size();i++) {
 				comboBox.addItem(TakeOutUtil.addressManager.loadAddress().get(i));
-			}	
-			mjId=TakeOutUtil.MJPlanManager.getMJId(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id());
-			lblNewLabel_12.setText(String.valueOf(TakeOutUtil.MJPlanManager.getMJMoney(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id())));
-			totalPriceBeforeMJ=FrmBuy.curProduct.getProductPrice()*number-TakeOutUtil.userHasCouInfoManager.getCutMoney(FrmBuy.curProduct);
-			finallyMoney = totalPriceBeforeMJ-TakeOutUtil.MJPlanManager.getMJMoney(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id());
-		} catch (BaseException e) {
+			}
+		} catch (BaseException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		lblNewLabel_10.setText(String.valueOf(finallyMoney));
-	    System.out.println(finallyMoney);
-		addressId = Integer.valueOf(getQuantity(String.valueOf(comboBox.getSelectedItem())));
-		
-		//满减ID
-
-		
-        
+			e1.printStackTrace();
+		}        
 
 	}
 
