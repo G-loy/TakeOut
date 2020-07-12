@@ -9,6 +9,24 @@ import java.util.Date;
     @date 2020年7月4日上午8:20:22
 */
 public class BeanProductOrder {
+	
+	 public static  final String[] PRODUCTORDER_TITLE = {"订单号","商家ID","满减ID","骑手ID","优惠券ID","原始价钱","实付价钱","下单时间","要求送达时间","状态"};
+	 
+		public Object getCell(int col) {
+			// TODO Auto-generated method stub
+			 if(col==0) return String.valueOf(getOrderId());
+			 else if(col==1) return String.valueOf(getShopId());
+			 else if(col==2) return String.valueOf(getMjId());
+			 else if(col==3) return String.valueOf(getRiderId());
+			 else if(col==4) return String.valueOf(getCoupId());
+			 else if(col==5) return String.valueOf(getOrgMoney());
+			 else if(col==6) return String.valueOf(getFinallyMoney());
+			 else if(col==7) return String.valueOf(getDrderTime());
+			 else if(col==8) return String.valueOf(getServiceTime());
+			 else if(col==9) return String.valueOf(getState());
+			 else return"";
+		}
+	
      private int orderId;
      private int ShopId;
      private int addressId;
@@ -20,6 +38,15 @@ public class BeanProductOrder {
      private double finallyMoney;
      private Date drderTime;
      private Date serviceTime;
+     private String state;
+     
+     
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
 	public int getOrderId() {
 		return orderId;
 	}
@@ -86,6 +113,7 @@ public class BeanProductOrder {
 	public void setServiceTime(Date serviceTime) {
 		this.serviceTime = serviceTime;
 	}
+
      
      
      

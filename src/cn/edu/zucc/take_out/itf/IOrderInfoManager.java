@@ -11,6 +11,6 @@ import cn.edu.zucc.take_out.util.BaseException;
  * @date:2020年7月9日
  */
 public interface IOrderInfoManager {
-       public BeanOrderInfo add(BeanProductInfo product,int number,boolean isCoup)throws BaseException;
+       public BeanOrderInfo add(int orderId,BeanProductInfo product,int number,boolean isCoup)throws BaseException;
        public void delet(BeanOrderInfo order)throws BaseException;
 }

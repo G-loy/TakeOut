@@ -153,7 +153,7 @@ public class UserHasCouInfoManager implements IUserHasCouInfoManager {
 	    List<StringBuffer> result = new ArrayList<StringBuffer>();
 	    try {
 	    	con=DruidUtil.getConnection();
-	    	String sql = "cou_id,Discount_money,number FROM User_has_Cou_info WHERE shop_id = ? AND Discount_money>?";
+	    	String sql = "SELECT cou_id,Discount_money,number FROM User_has_Cou_info WHERE shop_id = ? AND Discount_money>?";
 	    	pst = con.prepareStatement(sql);
 	    	pst.setInt(1, BeanUserInfo.currentLoginUser.getUserId());
 	    	pst.setDouble(2, FrmBuy.curProduct.getProductPrice());
@@ -182,7 +182,7 @@ public class UserHasCouInfoManager implements IUserHasCouInfoManager {
 		double discountMoney = 0 ;
 		try {
 			con=DruidUtil.getConnection();
-			String sql = "Discount_money From User_has_Cou_info WHERE cou_id = ?";
+			String sql = "SELECT Discount_money From User_has_Cou_info WHERE cou_id = ?";
 			pst = con.prepareStatement(sql);
 			pst.setInt(1, id);
 		    rst=pst.executeQuery();
@@ -196,6 +196,79 @@ public class UserHasCouInfoManager implements IUserHasCouInfoManager {
 			DruidUtil.releaseSqlConnection(rst, pst, con);
 		}
 		return 0;
+	}
+
+	@Override
+	public int findCoupId(BeanProductInfo product) throws BaseException {
+		// TODO Auto-generated method stub
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		int coup_id = 0;
+		try {
+			con = DruidUtil.getConnection();
+			String sql = "SELECT cou_id FROM User_has_Cou_info WHERE Discount_money<? AND shop_id = ? AND Max(Discount_money)";
+			pst = con.prepareStatement(sql);
+			pst.setDouble(1, product.getProductPrice());
+			pst.setInt(2, product.getShop_id());
+			rst = pst.executeQuery();
+			while(rst.next()) {
+				coup_id = rst.getInt(1);
+			}
+			return coup_id;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally {
+			DruidUtil.releaseSqlConnection(rst, pst, con);
+		}
+		return 0;
+	     
+	}
+
+	@Override
+	public double getCutMoney(BeanProductInfo product) throws BaseException {
+		// TODO Auto-generated method stub
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		double money = 0 ;
+		try {
+			con = DruidUtil.getConnection();
+			String sql = "SELECT MAX(Discount_money) FROM User_has_Cou_info WHERE Discount_money<? AND shop_id = ?";
+			pst=con.prepareStatement(sql);
+			pst.setDouble(1,product.getProductPrice());
+			pst.setInt(2, product.getShop_id());
+			rst = pst.executeQuery();
+			
+			while(rst.next()) {
+				money = rst.getDouble(1);
+			}
+            return money;
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DruidUtil.releaseSqlConnection(rst, pst, con);
+		}
+		return 0;
+	}
+
+	@Override
+	public void used(int coupId) throws BaseException {
+		// TODO Auto-generated method stub
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		try {
+			con = DruidUtil.getConnection();
+			String sql = "UPDATE User_has_Cou_info SET number=number-1 WHERE coup_id = ?";
+			pst=con.prepareStatement(sql);
+			pst.setInt(1, coupId);
+			rst =pst.executeQuery();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DruidUtil.releaseSqlConnection(rst, pst, con);
+		}
 	}
 	
 }

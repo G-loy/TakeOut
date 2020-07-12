@@ -120,6 +120,7 @@ public class ProductManager implements IProductManager {
               product.setProductPrice(rst.getDouble(4));
               product.setPrefPrice(rst.getDouble(5));
               product.setNumber(rst.getInt(6));
+              product.setShop_id(rst.getInt(7));
               result.add(product);
 			}
 		}catch(SQLException e) {
@@ -149,6 +150,7 @@ public class ProductManager implements IProductManager {
               product.setProductPrice(rst.getDouble(4));
               product.setPrefPrice(rst.getDouble(5));
               product.setNumber(rst.getInt(6));
+              product.setShop_id(rst.getInt(7));
               result.add(product);
 			}
 		}catch(SQLException e) {
@@ -157,6 +159,27 @@ public class ProductManager implements IProductManager {
 			DruidUtil.releaseSqlConnection(rst, st, connection);
 		}
 		return result;
+	}
+
+	@Override
+	public void sold(BeanProductInfo product, int number) throws BaseException {
+		// TODO Auto-generated method stub
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		try {
+			con = DruidUtil.getConnection();
+			String sql = "UPDATE Product_info SET number = ? WHERE product_id = ?";
+			pst=con.prepareStatement(sql);
+			pst.setInt(1, product.getNumber()-number);
+			pst.setInt(2, product.getProductId());
+			pst.execute();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DruidUtil.releaseSqlConnection(rst, pst, con);
+		}
+			
 	}
 
 }

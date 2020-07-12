@@ -17,4 +17,6 @@ public interface ICouManager {
 	     public void delet(BeanCouInfo cou) throws BaseException;
 	     public List<BeanCouInfo> loadAll() throws BaseException;
 	     public void changeCoup(BeanCouInfo coup) throws BaseException;
+	     
+	     
 }

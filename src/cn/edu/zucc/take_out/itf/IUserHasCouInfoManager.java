@@ -20,4 +20,7 @@ public interface IUserHasCouInfoManager {
        public BeanUserHasCouInfo SelectIsCoup(BeanProductInfo product) throws BaseException;
        public List<StringBuffer> showMoneyById() throws BaseException;
        public double getCutMoneyByID(int id) throws BaseException;
+       public int findCoupId (BeanProductInfo product) throws BaseException;
+       public double getCutMoney(BeanProductInfo product)throws BaseException;
+       public void used(int coupId)throws BaseException;
        }

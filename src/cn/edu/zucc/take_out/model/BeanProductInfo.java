@@ -7,7 +7,7 @@ package cn.edu.zucc.take_out.model;
 */
 public class BeanProductInfo {
 	 
-	 public static final String[] PRODUCT_TITLE = {"商品ID","商品名","商品价格","优惠价格","库存"};
+	 public static final String[] PRODUCT_TITLE = {"商品ID","商品名","商品价格","优惠价格","库存","商家ID"};
 	
 	 public String getCell(int col) {
 		 if(col==0) return String.valueOf(getProductId());
@@ -15,6 +15,7 @@ public class BeanProductInfo {
 		 else if(col==2) return String.valueOf(getProductPrice());
 		 else if(col==3) return String.valueOf(getPrefPrice());
 		 else if(col==4) return String.valueOf(getNumber());
+		 else if(col==5) return String.valueOf(getShop_id());
 		 else return"";
 	 }
 	 

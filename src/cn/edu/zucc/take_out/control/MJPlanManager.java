@@ -140,9 +140,60 @@ public class MJPlanManager implements IMJPlanManager {
 			
 			pst.execute();
 		}catch(SQLException e){
-			
+			e.printStackTrace();
+		}finally {
+			DruidUtil.releaseSqlConnection(rst, pst, connection);
 		}
 		
+	}
+
+	@Override
+	public double getMJMoney(double totalMoney, int shop_id) throws BaseException {
+		// TODO Auto-generated method stub
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		double MjCutMoney = 0;
+		try {
+		    con = DruidUtil.getConnection();
+		    String sql = "SELECT Max(discount_money) FROM Mj_plan WHERE mj_money>? and shop_id = ?";
+		    pst =con.prepareStatement(sql);
+		    pst.setDouble(1, totalMoney);
+		    pst.setInt(2, shop_id);
+		    rst = pst.executeQuery();
+		    while(rst.next()) {
+		    	MjCutMoney = rst.getDouble(1);
+		    }
+		    return MjCutMoney;
+		}catch(SQLException e) {
+			DruidUtil.releaseSqlConnection(rst, pst, con);
+		}    
+		return 0;
+	}
+
+	@Override
+	public int getMJId(double totalMoney, int shop_id) throws BaseException {
+		// TODO Auto-generated method stub
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		int MjId = 0;
+		try {
+		    con = DruidUtil.getConnection();
+		    String sql = "SELECT mj_id FROM Mj_plan WHERE mj_money>? and shop_id = ? and Max(discount_money)";
+		    pst =con.prepareStatement(sql);
+		    pst.setDouble(1, totalMoney);
+		    pst.setInt(2, shop_id);
+		    rst = pst.executeQuery();
+		    while(rst.next()) {
+		    	MjId=rst.getInt(1);
+		    }
+		    return MjId;
+		}catch(SQLException e) {
+			DruidUtil.releaseSqlConnection(rst, pst, con);
+		}    
+		
+		return 0;
 	}
 
 }

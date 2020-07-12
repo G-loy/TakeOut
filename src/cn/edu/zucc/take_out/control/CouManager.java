@@ -130,6 +130,7 @@ public class CouManager implements ICouManager {
 			DruidUtil.releaseSqlConnection(rst, st, connection);
 		}
 	}
-	
+
+
 
 }

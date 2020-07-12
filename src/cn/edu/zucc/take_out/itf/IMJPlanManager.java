@@ -16,4 +16,7 @@ public interface IMJPlanManager {
        public List<BeanMjPlan> loadAll()throws BaseException;
        public void deletPlan(BeanMjPlan mjPlan) throws BaseException;
        public void changePlan(BeanMjPlan plan) throws BaseException;
+       public double getMJMoney(double totalMoney,int shop_id)throws BaseException;
+       public int getMJId(double totalMoney,int shop_id) throws BaseException;
+       
 }

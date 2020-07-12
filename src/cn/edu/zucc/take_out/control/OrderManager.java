@@ -20,7 +20,7 @@ import cn.edu.zucc.take_out.util.DruidUtil;
 public class OrderManager implements IOrderInfoManager {
 
 	@Override
-	public BeanOrderInfo add(BeanProductInfo product,int number,boolean isCoup) throws BaseException {
+	public BeanOrderInfo add(int orderId,BeanProductInfo product,int number,boolean isCoup) throws BaseException {
 		// TODO Auto-generated method stub
 		Connection con  = null;
 		PreparedStatement pst = null;
@@ -28,29 +28,18 @@ public class OrderManager implements IOrderInfoManager {
 		BeanOrderInfo order = new BeanOrderInfo(); 
 		try {
 			con=DruidUtil.getConnection();
-			String sql = "INSERT INTO order_info(product_id,number,money,per_discount)VALUES(?,?,?,?)";
+			String sql = "INSERT INTO order_info(order_id,product_id,number,money,per_discount)VALUES(?,?,?,?,?)";
 			pst = con.prepareStatement(sql);
-			pst.setInt(1, product.getProductId());
-			pst.setInt(2,number);
-			pst.setDouble(3,product.getProductPrice());
+			pst.setInt(1, orderId);
+			pst.setInt(2, product.getProductId());
+			pst.setInt(3,number);
+			pst.setDouble(4,product.getProductPrice());
 			if(isCoup==true) {
-				pst.setDouble(4, product.getProductPrice()-product.getPrefPrice());
+				pst.setDouble(5, product.getProductPrice()-product.getPrefPrice());
 			}else {
-				pst.setDouble(4, 0);
+				pst.setDouble(5, 0);
 			}
 			pst.execute();
-			
-			sql  = "SELECT * FROM order_info WHERE product_id = ? ";
-			pst.setInt(1, product.getProductId());
-			rst = pst.executeQuery();
-			while (rst.next()) {
-				order.setOrderId(rst.getInt(1));
-				order.setProductId(rst.getInt(2));
-				order.setNumber(rst.getInt(3));
-				order.setMoney(rst.getDouble(4));
-				order.setPerDiscount(rst.getDouble(5));
-			}
-			return order;	
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {

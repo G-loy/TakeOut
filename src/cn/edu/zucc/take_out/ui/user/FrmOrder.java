@@ -1,6 +1,5 @@
 package cn.edu.zucc.take_out.ui.user;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -8,14 +7,17 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import cn.edu.zucc.take_out.TakeOutUtil;
+import cn.edu.zucc.take_out.model.BeanProductOrder;
+import cn.edu.zucc.take_out.model.BeanUserInfo;
 import cn.edu.zucc.take_out.util.BaseException;
 
 import javax.swing.JLabel;
-import javax.swing.JSpinner;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * @author: Pengkun Gu
@@ -32,9 +34,16 @@ public class FrmOrder extends JFrame {
 	private JTextField textField;
 	private JTextField textFieldProductNumber = new JTextField();
 	private JLabel lblNewLabelpreDiscount = new JLabel();
+	@SuppressWarnings("rawtypes")
 	static JComboBox comboBox = new JComboBox();
-	static JComboBox comboBox_1 = new JComboBox();
 	private double totalPriceBeforeMJ ;
+	private double finallyMoney;
+	private int coupId = 0;
+	private int mjId = 0;
+	private  int addressId = 0;
+	private boolean isCoup;
+	private BeanProductOrder productor = null;
+	private int number  = 0;
 
 	/**
 	 * Launch the application.
@@ -55,8 +64,9 @@ public class FrmOrder extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings("unchecked")
 	public FrmOrder() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 503, 642);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -91,6 +101,29 @@ public class FrmOrder extends JFrame {
 		contentPane.add(lblNewLabelProductPrice);
 
 		JButton btnNewButton = new JButton("确定");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					System.out.println("商家ID"+FrmBuy.curProduct.getShop_id());
+					System.out.println("CoupID"+coupId);
+					System.out.println(finallyMoney);
+					productor = TakeOutUtil.productOrderManager.add(FrmBuy.curProduct, BeanUserInfo.currentLoginUser, mjId, coupId, addressId,totalPriceBeforeMJ,finallyMoney, TakeOutUtil.strToDate(textField.getText()), "配送中");
+					if(coupId==0) {
+						isCoup=false;
+					}else {
+						isCoup = true;
+						TakeOutUtil.userHasCouInfoManager.used(coupId);             
+					}
+					number=Integer.valueOf(textFieldProductNumber.getText());
+					TakeOutUtil.orderInfoManager.add(productor.getOrderId(),FrmBuy.curProduct,number, isCoup);
+					TakeOutUtil.productManager.sold(FrmBuy.curProduct, number);
+					FrmOrder.this.setVisible(false);
+				} catch (BaseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		btnNewButton.setBounds(39, 533, 152, 49);
 		contentPane.add(btnNewButton);
 
@@ -155,55 +188,52 @@ public class FrmOrder extends JFrame {
 		lblNewLabelProductPrice.setText(String.valueOf(FrmBuy.curProduct.getProductPrice()));
 		lblNewLabelpreDiscount.setText(String.valueOf(FrmBuy.curProduct.getPrefPrice()));
 
-		JLabel lblNewLabel_1 = new JLabel("选择优惠券");
-		lblNewLabel_1.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblNewLabel_1.setBounds(39, 386, 131, 26);
+		JLabel lblNewLabel_1 = new JLabel("若有相应优惠券，系统将自动使用");
+		lblNewLabel_1.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		lblNewLabel_1.setBounds(39, 477, 373, 26);
 		contentPane.add(lblNewLabel_1);
-
-
-		comboBox_1.setBounds(268, 390, 130, 27);
-		contentPane.add(comboBox_1);
 
 		JLabel lblNewLabel_8 = new JLabel("结算金额");
 		lblNewLabel_8.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblNewLabel_8.setBounds(39, 466, 122, 29);
+		lblNewLabel_8.setBounds(39, 428, 122, 29);
 		contentPane.add(lblNewLabel_8);
 
 		JLabel lblNewLabel_10 = new JLabel("New label");
 		lblNewLabel_10.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblNewLabel_10.setBounds(268, 460, 126, 41);
+		lblNewLabel_10.setBounds(268, 422, 126, 41);
 		contentPane.add(lblNewLabel_10);
 
 		JLabel lblNewLabel_11 = new JLabel("满减金额");
 		lblNewLabel_11.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblNewLabel_11.setBounds(39, 424, 131, 30);
+		lblNewLabel_11.setBounds(39, 386, 131, 30);
 		contentPane.add(lblNewLabel_11);
 
 		JLabel lblNewLabel_12 = new JLabel("New label");
 		lblNewLabel_12.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblNewLabel_12.setBounds(268, 429, 130, 25);
+		lblNewLabel_12.setBounds(268, 391, 130, 25);
 		contentPane.add(lblNewLabel_12);
-
+		
 		try {
 			for(int i = 0; i<TakeOutUtil.addressManager.loadAddress().size();i++) {
 				comboBox.addItem(TakeOutUtil.addressManager.loadAddress().get(i));
-			}
+			}	
+			mjId=TakeOutUtil.MJPlanManager.getMJId(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id());
+			lblNewLabel_12.setText(String.valueOf(TakeOutUtil.MJPlanManager.getMJMoney(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id())));
+			totalPriceBeforeMJ=FrmBuy.curProduct.getProductPrice()*number-TakeOutUtil.userHasCouInfoManager.getCutMoney(FrmBuy.curProduct);
+			finallyMoney = totalPriceBeforeMJ-TakeOutUtil.MJPlanManager.getMJMoney(totalPriceBeforeMJ, FrmBuy.curProduct.getShop_id());
 		} catch (BaseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		lblNewLabel_10.setText(String.valueOf(finallyMoney));
+	    System.out.println(finallyMoney);
+		addressId = Integer.valueOf(getQuantity(String.valueOf(comboBox.getSelectedItem())));
 		
-		if(String.valueOf(comboBox_1.getSelectedItem())==null||String.valueOf(comboBox_1.getSelectedItem())=="") {
-			totalPriceBeforeMJ=FrmBuy.curProduct.getProductPrice()*Integer.valueOf(textFieldProductNumber.getText());
-		}else {
-			try {
-				totalPriceBeforeMJ = FrmBuy.curProduct.getProductPrice()*Integer.valueOf(textFieldProductNumber.getText())-TakeOutUtil.userHasCouInfoManager.getCutMoneyByID(getCoupId());
-			}catch (NumberFormatException | BaseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		//满减ID
+
+		
+        
 
 	}
 
@@ -211,7 +241,6 @@ public class FrmOrder extends JFrame {
 
 
 
-//获得所选地址的ID
 public static String getQuantity(String regular){
 	int index = 0;
 	for (int i = 0; i < regular.length(); i++) {
@@ -231,13 +260,6 @@ public static String getQuantity(String regular){
 	return regular.substring(0, index);
 }
 
-public static int getCoupId() {
-	String coup = String.valueOf(comboBox_1.getSelectedItem());
-	System.out.println(coup);
-	String coupID=getQuantity(coup.substring(2));
-	System.out.println(coupID);
-	return Integer.valueOf(coupID);
-}
 
 
 }

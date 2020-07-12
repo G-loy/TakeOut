@@ -12,7 +12,9 @@ import java.text.SimpleDateFormat;
 import cn.edu.zucc.take_out.control.AddressManager;
 import cn.edu.zucc.take_out.control.AdminManager;
 import cn.edu.zucc.take_out.control.CouManager;
+import cn.edu.zucc.take_out.control.IProductEvaluateManager;
 import cn.edu.zucc.take_out.control.ProductClassManager;
+import cn.edu.zucc.take_out.control.ProductEvaluateManager;
 import cn.edu.zucc.take_out.control.ProductManager;
 import cn.edu.zucc.take_out.control.RiderIncomeManager;
 import cn.edu.zucc.take_out.control.RiderManager;
@@ -26,6 +28,7 @@ import cn.edu.zucc.take_out.itf.IMJPlanManager;
 import cn.edu.zucc.take_out.itf.IOrderInfoManager;
 import cn.edu.zucc.take_out.itf.IProductClassManager;
 import cn.edu.zucc.take_out.itf.IProductManager;
+import cn.edu.zucc.take_out.itf.IProductOrderManager;
 import cn.edu.zucc.take_out.itf.IRiderIncomeManager;
 import cn.edu.zucc.take_out.itf.IRiderManager;
 import cn.edu.zucc.take_out.itf.IShopManager;
@@ -33,6 +36,7 @@ import cn.edu.zucc.take_out.itf.IUserHasCouInfoManager;
 import cn.edu.zucc.take_out.itf.IUserManager;
 import cn.edu.zucc.take_out.control.MJPlanManager;
 import cn.edu.zucc.take_out.control.OrderManager;
+import cn.edu.zucc.take_out.control.ProductOrderManager;
 
 public class TakeOutUtil {
 	
@@ -48,6 +52,8 @@ public class TakeOutUtil {
        public static IMJPlanManager MJPlanManager = new MJPlanManager();
        public static IUserHasCouInfoManager userHasCouInfoManager = new UserHasCouInfoManager();	   
        public static IOrderInfoManager orderInfoManager = new OrderManager();
+       public static IProductOrderManager productOrderManager =new ProductOrderManager();
+       public static IProductEvaluateManager productEvaluateManager =new ProductEvaluateManager();
        
        
        public static java.sql.Date strToDate(String strDate) {  

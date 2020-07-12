@@ -13,7 +13,6 @@ import javax.swing.table.DefaultTableModel;
 
 import cn.edu.zucc.take_out.TakeOutUtil;
 import cn.edu.zucc.take_out.model.BeanAddress;
-import cn.edu.zucc.take_out.model.BeanAdminInfo;
 import cn.edu.zucc.take_out.model.BeanUserHasCouInfo;
 import cn.edu.zucc.take_out.model.BeanUserInfo;
 import cn.edu.zucc.take_out.util.BaseException;

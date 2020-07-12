@@ -18,5 +18,6 @@ public interface IProductManager {
 	public void delet(BeanProductInfo product)throws BaseException;
 	public List<BeanProductInfo> loadAll(BeanProductClass productClass) throws BaseException;
 	public List<BeanProductInfo> loadAll() throws BaseException;
+	public void sold(BeanProductInfo product,int number) throws BaseException;
 
 }

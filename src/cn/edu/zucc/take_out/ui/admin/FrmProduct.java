@@ -3,7 +3,6 @@ package cn.edu.zucc.take_out.ui.admin;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
@@ -14,10 +13,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import cn.edu.zucc.take_out.TakeOutUtil;
-import cn.edu.zucc.take_out.model.BeanAdminInfo;
 import cn.edu.zucc.take_out.model.BeanProductClass;
 import cn.edu.zucc.take_out.model.BeanProductInfo;
-import cn.edu.zucc.take_out.model.BeanShopInfo;
 import cn.edu.zucc.take_out.util.BaseException;
 
 import javax.swing.JMenuBar;
